@@ -3,8 +3,7 @@ const express = require('express');
 const cors = require('cors');
 
 // Налаштування
-const TOKEN = '8182285531:AAHgNJ_KkXUtFNh-dupM2gOY5TmBaqoQ7eE '; // Замініть на ваш токен від BotFather
-const CHANNEL_ID = '@air_alert_ua';
+const TOKEN = process.env.TOKEN || 'YOUR_BOT_TOKEN'; // Використовуємо змінну середовища
 const app = express();
 const bot = new TelegramBot(TOKEN, { polling: true });
 
@@ -41,22 +40,20 @@ const regions = [
     { name: "Автономна Республіка Крим", alert: false }
 ];
 
-// Обробка повідомлень із каналу
-bot.on('channel_post', (msg) => {
-    if (msg.chat.id.toString() === CHANNEL_ID) {
-        const text = msg.text || '';
-        console.log('Отримано повідомлення:', text);
-        
-        regions.forEach(region => {
-            if (text.includes(`Повітряна тривога в ${region.name}`) || text.includes(`Повітряна тривога у ${region.name}`)) {
-                region.alert = true;
-                console.log(`${region.name}: Тривога`);
-            } else if (text.includes(`Відбій повітряної тривоги в ${region.name}`) || text.includes(`Відбій повітряної тривоги у ${region.name}`)) {
-                region.alert = false;
-                console.log(`${region.name}: Відбій`);
-            }
-        });
-    }
+// Обробка повідомлень (пересиланих із @air_alert_ua)
+bot.on('message', (msg) => {
+    const text = msg.text || '';
+    console.log('Отримано повідомлення:', text);
+    
+    regions.forEach(region => {
+        if (text.includes(`Повітряна тривога в ${region.name}`) || text.includes(`Повітряна тривога у ${region.name}`)) {
+            region.alert = true;
+            console.log(`${region.name}: Тривога`);
+        } else if (text.includes(`Відбій повітряної тривоги в ${region.name}`) || text.includes(`Відбій повітряної тривоги у ${region.name}`)) {
+            region.alert = false;
+            console.log(`${region.name}: Відбій`);
+        }
+    });
 });
 
 // Обробка помилок polling
