@@ -5,9 +5,11 @@
   "scripts": {
     "start": "node server.js"
   },
+  "license": "MIT",
   "dependencies": {
     "express": "^4.17.1",
     "node-telegram-bot-api": "^0.66.0",
-    "cors": "^2.8.5"
+    "cors": "^2.8.5",
+    "request": "^2.88.2"
   }
 }
